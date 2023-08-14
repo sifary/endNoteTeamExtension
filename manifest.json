@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "EndNote Field Highlighter",
+  "version": "1.0",
+  "description": "Change background color of elements with specific content.",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/ExtLogoV3.png",
+      "48": "icons/ExtLogoV3.png",
+      "128": "icons/ExtLogoV3.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+      "https://clarivateanalytics.lightning.force.com/*", 
+      "https://clarivateanalytics--preprod.sandbox.lightning.force.com/*"
+    ],
+      "js": ["content_script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
