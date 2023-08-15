@@ -97,6 +97,31 @@ function handleAnchors() {
 
 // Main function to check and handle anchor elements
 function handleCases() {
+  let webTables = document.querySelectorAll('table');
+
+  for (let table of webTables) {
+    const rows = table.querySelector('tbody').querySelectorAll('tr');
+    for (let row of rows) {
+      const cells = row.querySelectorAll('span span');
+      for (let cell of cells) {
+        if (cell.textContent.includes("New Email Received") || cell.textContent.includes("Re-opened") || cell.textContent.includes("Completed by Resolver Group") || cell.textContent.includes("Open") || cell.textContent.includes("New") ) {
+          highlightAnchorWithSpecificContent(row, "moccasin")
+        } else if (cell.textContent.includes("Pending Action") || cell.textContent.includes("Initial Response Sent")) {
+          highlightAnchorWithSpecificContent(row, "lemonchiffon")
+        } else if (cell.textContent.includes("Assigned to Resolver Group") || cell.textContent.includes("Pending Internal Response") || cell.textContent.includes("Pending AM Response") || cell.textContent.includes("Pending QA Review")) {
+          highlightAnchorWithSpecificContent(row, "powderblue")
+        } else if (cell.textContent.includes("Solution Delivered to Customer")) {
+          highlightAnchorWithSpecificContent(row, "palegreen")
+        } else if (cell.textContent.includes("Closed") || cell.textContent.includes("Pending Customer Response") || cell.textContent.includes("Approved Waiting on Info") || cell.textContent.includes("Campaign Scheduled") || cell.textContent.includes("Collections Suspension") || cell.textContent.includes("Count Returned") || cell.textContent.includes("Count Submitted") || cell.textContent.includes("Send to Webotis") || cell.textContent.includes("Testing Submitted")) {
+          unhighlightAnchor(row)
+        }
+      }
+    }
+  }
+}
+
+// Old function to check and handle anchor elements
+/* function handleCases() {
   const casesTable = document.querySelector("#brandBand_1 > div > div > div > div > div.slds-grid.listDisplays.safari-workaround-anchor > div > div.slds-col.slds-no-space.forceListViewManagerPrimaryDisplayManager > div.undefined.forceListViewManagerGrid > div.listViewContent.slds-table--header-fixed_container > div.uiScroller.scroller-wrapper.scroll-bidirectional.native > div > div > table > tbody");
   
   if (casesTable) {
@@ -122,7 +147,7 @@ function handleCases() {
   } else {
     console.log("casesTable not found");
   }
-}
+} */
 
 // --- EVENT LISTENERS FOR EXECUTING FUNCTIONS ---
 
