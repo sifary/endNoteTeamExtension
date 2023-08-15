@@ -120,35 +120,6 @@ function handleCases() {
   }
 }
 
-// Old function to check and handle anchor elements
-/* function handleCases() {
-  const casesTable = document.querySelector("#brandBand_1 > div > div > div > div > div.slds-grid.listDisplays.safari-workaround-anchor > div > div.slds-col.slds-no-space.forceListViewManagerPrimaryDisplayManager > div.undefined.forceListViewManagerGrid > div.listViewContent.slds-table--header-fixed_container > div.uiScroller.scroller-wrapper.scroll-bidirectional.native > div > div > table > tbody");
-  
-  if (casesTable) {
-    const casesList = casesTable.getElementsByTagName("tr");
-    for (const caseRow of casesList) {
-      const caseStatusGeneral = caseRow.querySelectorAll("td span span.slds-truncate");
-      for (const caseStatus of caseStatusGeneral) {
-        if (caseStatus.textContent.includes("New Email Received") || caseStatus.textContent.includes("Re-opened")) {
-          highlightAnchorWithSpecificContent(caseRow, "moccasin")
-        } else if (caseStatus.textContent.includes("Pending Action")) {
-          highlightAnchorWithSpecificContent(caseRow, "lemonchiffon")
-        } else if (caseStatus.textContent.includes("Assigned to Resolver Group")) {
-          highlightAnchorWithSpecificContent(caseRow, "powderblue")
-        } else if (caseStatus.textContent.includes("Solution Delivered to Customer")) {
-          highlightAnchorWithSpecificContent(caseRow, "palegreen")
-        } else if (caseStatus.textContent.includes("Open")) {
-          highlightAnchorWithSpecificContent(caseRow, "peachpuff")
-        } else {
-          unhighlightAnchor(caseRow)
-        }
-      }
-    }   
-  } else {
-    console.log("casesTable not found");
-  }
-} */
-
 // --- EVENT LISTENERS FOR EXECUTING FUNCTIONS ---
 
 // MutationObserver to detect changes in the DOM
