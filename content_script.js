@@ -95,6 +95,61 @@ function handleAnchors() {
 
 // --- OPEN CASES HIGHLIGHTER ---
 
+// --- Given two dates, return the earlier date ---
+function getEarlierDate(date1Str, date2Str) {
+  const date1 = new Date(date1Str);
+  const date2 = new Date(date2Str);
+
+  if (date1 < date2) {
+    console.log("The earlier date is:", date1);
+    return date1;
+  } else {
+    console.log("The earlier date is:", date2);
+    return date2;
+  }
+}
+
+// --- Calculate the time difference between the given date and now in minutes ---
+function calculateTimeDifferenceInMinutes(date) {
+  const openDate = new Date(date);
+  const currentDate = new Date();
+
+  const timeDifferenceInMilliseconds = Math.abs(currentDate - openDate);
+  const timeDifferenceInMinutes = timeDifferenceInMilliseconds / (1000 * 60);
+
+  return timeDifferenceInMinutes;
+}
+
+// --- Check if the given date is in the correct format ---
+function isValidDateFormat(textContent) {
+  const datePattern = /^(1[0-2]|0?[1-9])\/(3[01]|[12][0-9]|0?[1-9])\/\d{4} (1[0-2]|0?[1-9]):([0-5][0-9]) (AM|PM)$/;
+
+  return datePattern.test(textContent);
+}
+
+// --- Check if the row element has the term "Open" but not "Re-opened", and returns true if both are fulfilled ---
+function hasOpenButNotReopened(rowElement) {
+  const statusElements = rowElement.querySelectorAll("td span span");
+  let isOpenFound = false;
+  let isReopenedFound = false;
+
+  statusElements.forEach(element => {
+    const textContent = element.textContent.trim();
+    
+    if (textContent === "Open") {
+      isOpenFound = true;
+    } else if (textContent === "Re-opened") {
+      isReopenedFound = true;
+    }
+  });
+
+  if (isOpenFound && !isReopenedFound) {
+    return true
+  } else {
+    return false;
+  }
+}
+
 // Main function to check and handle anchor elements
 function handleCases() {
   let webTables = document.querySelectorAll('table');
@@ -102,19 +157,32 @@ function handleCases() {
   for (let table of webTables) {
     const rows = table.querySelector('tbody').querySelectorAll('tr');
     for (let row of rows) {
-      const cells = row.querySelectorAll('span span');
-      for (let cell of cells) {
-        if (cell.textContent.includes("New Email Received") || cell.textContent.includes("Re-opened") || cell.textContent.includes("Completed by Resolver Group") || cell.textContent.includes("Open") || cell.textContent.includes("New") ) {
-          highlightAnchorWithSpecificContent(row, "moccasin")
-        } else if (cell.textContent.includes("Pending Action") || cell.textContent.includes("Initial Response Sent")) {
-          highlightAnchorWithSpecificContent(row, "lemonchiffon")
-        } else if (cell.textContent.includes("Assigned to Resolver Group") || cell.textContent.includes("Pending Internal Response") || cell.textContent.includes("Pending AM Response") || cell.textContent.includes("Pending QA Review")) {
-          highlightAnchorWithSpecificContent(row, "powderblue")
-        } else if (cell.textContent.includes("Solution Delivered to Customer")) {
-          highlightAnchorWithSpecificContent(row, "palegreen")
-        } else if (cell.textContent.includes("Closed") || cell.textContent.includes("Pending Customer Response") || cell.textContent.includes("Approved Waiting on Info") || cell.textContent.includes("Campaign Scheduled") || cell.textContent.includes("Collections Suspension") || cell.textContent.includes("Count Returned") || cell.textContent.includes("Count Submitted") || cell.textContent.includes("Send to Webotis") || cell.textContent.includes("Testing Submitted")) {
-          unhighlightAnchor(row)
+      if (hasOpenButNotReopened(row)) {
+        const dateArray = [];
+        const dateElements = rowElement.querySelectorAll("td span span");
+      
+        dateElements.forEach(element => {
+          const textContent = element.textContent;
+          
+          if (isValidDateFormat(textContent)) {
+            dateArray.push(textContent);
+          } 
+        });
+
+        const earlierDate = getEarlierDate(dateArray[0], dateArray[1]);
+        const caseMinutes = calculateTimeDifferenceInMinutes(earlierDate);
+
+        if (caseMinutes > 90) {
+          highlightAnchorWithSpecificContent(row, "rgb(255, 157, 184)")
+        } else if(caseMinutes <= 90 && caseMinutes > 60) {
+          highlightAnchorWithSpecificContent(row, "rgb(251, 171, 134)")
+        } else if(caseMinutes <= 60 && caseMinutes > 30) {
+          highlightAnchorWithSpecificContent(row, "rgb(255, 214, 118)")
+        } else if(caseMinutes <= 30) {
+          highlightAnchorWithSpecificContent(row, "rgb(160, 255, 154)")
         }
+      } else {
+        unhighlightAnchor(row);
       }
     }
   }
