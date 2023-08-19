@@ -157,10 +157,12 @@ function handleCases() {
   for (let table of webTables) {
     const rows = table.querySelector('tbody').querySelectorAll('tr');
     for (let row of rows) {
+      // check if the row has the term "Open" but not "Re-opened"
       if (hasOpenButNotReopened(row)) {
         const dateArray = [];
-        const dateElements = rowElement.querySelectorAll("td span span");
-      
+        const dateElements = row.querySelectorAll("td span span");
+        
+        // check if there's any textContent with the correct format, and push it to dateArray if it is
         dateElements.forEach(element => {
           const textContent = element.textContent;
           
@@ -169,20 +171,65 @@ function handleCases() {
           } 
         });
 
-        const earlierDate = getEarlierDate(dateArray[0], dateArray[1]);
-        const caseMinutes = calculateTimeDifferenceInMinutes(earlierDate);
+        //check if the number of items in dateArray is 2 or 1, and assign earlierDate accordingly
+        let earlierDate;
 
+        if (dateArray.length === 2) {
+          earlierDate = getEarlierDate(dateArray[0], dateArray[1]);
+        } else if (dateArray.length === 1) {
+          earlierDate = dateArray[0];
+        }
+
+        // calculate the time difference in minutes
+        const caseMinutes = calculateTimeDifferenceInMinutes(earlierDate);
+        
+        // highlight the row with different colors based on the time difference
         if (caseMinutes > 90) {
-          highlightAnchorWithSpecificContent(row, "rgb(255, 157, 184)")
+          highlightAnchorWithSpecificContent(row, "rgb(255, 220, 230)")
         } else if(caseMinutes <= 90 && caseMinutes > 60) {
-          highlightAnchorWithSpecificContent(row, "rgb(251, 171, 134)")
+          highlightAnchorWithSpecificContent(row, "rgb(255, 232, 184)")
         } else if(caseMinutes <= 60 && caseMinutes > 30) {
-          highlightAnchorWithSpecificContent(row, "rgb(255, 214, 118)")
+          highlightAnchorWithSpecificContent(row, "rgb(209, 247, 196)")
         } else if(caseMinutes <= 30) {
-          highlightAnchorWithSpecificContent(row, "rgb(160, 255, 154)")
+          highlightAnchorWithSpecificContent(row, "rgb(194, 244, 233)")
         }
       } else {
         unhighlightAnchor(row);
+      }
+    }
+  }
+}
+
+// --- CASE STATUS HIGHLIGHTER ---
+
+// --- Generate the style declaration for the handleStatus function ---
+function generateStyle(color) {
+  return `background-color: ${color}; border-radius: 6px; padding: 3px 6px; color: white; font-weight: 500;`;
+}
+
+// Main function to check and highlight status elements
+function handleStatus() {
+  let webTables = document.querySelectorAll('table');
+
+  for (let table of webTables) {
+    const rows = table.querySelector('tbody').querySelectorAll('tr');
+    for (let row of rows) {
+      let cells = row.querySelectorAll('td span span');
+      for (let cell of cells) {
+          let cellText = cell.textContent.trim();
+        if (cellText === "New Email Received" || cellText === "Re-opened" || cellText === "Completed by Resolver Group" || cellText === "New") {
+          cell.setAttribute("style", generateStyle("rgb(191, 39, 75)"));
+        } else if (cellText === "Pending Action" || cellText === "Initial Response Sent") {
+          cell.setAttribute("style", generateStyle("rgb(247, 114, 56)"));
+        } else if (cellText === "Assigned to Resolver Group" || cellText === "Pending Internal Response" || cellText === "Pending AM Response" || cellText === "Pending QA Review") {
+          cell.setAttribute("style", generateStyle("rgb(140, 77, 253)"));
+        } else if (cellText === "Solution Delivered to Customer") {
+          cell.setAttribute("style", generateStyle("rgb(45, 200, 64)"));
+        } else if (cellText === "Closed" || cellText === "Pending Customer Response") {
+          cell.setAttribute("style", generateStyle("rgb(103, 103, 103)"));
+        } else {
+          cell.removeAttribute("style");
+        }
       }
     }
   }
@@ -194,12 +241,15 @@ function handleCases() {
 const observer = new MutationObserver(() => {
   handleAnchors();
   handleCases();
+  handleStatus()
 });
 
 document.addEventListener("click", handleAnchors);
 document.addEventListener("mouseover", handleAnchors);
 document.addEventListener("click", handleCases);
 document.addEventListener("mouseover", handleCases);
+document.addEventListener("click", handleStatus);
+document.addEventListener("mouseover", handleStatus);
 
 // Observe the document for mutations (changes in the DOM)
 observer.observe(document, {
