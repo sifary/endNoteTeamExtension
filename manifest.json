@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "EndNote Field Highlighter",
+  "name": "EndNote SFDC Fields Highlighter",
   "version": "1.0",
-  "description": "Change background color of elements with specific content.",
+  "description": "Change the styles, especially the background color, of elements or ancestor/enclosing elements with specific content.",
   "permissions": ["activeTab"],
   "action": {
     "default_popup": "popup.html",
