@@ -177,7 +177,7 @@ function handleCases() {
         if (dateArray.length === 2) {
           earlierDate = getEarlierDate(dateArray[0], dateArray[1]);
         } else if (dateArray.length === 1) {
-          earlierDate = dateArray[0];
+          earlierDate = new Date(dateArray[0]);
         }
 
         // calculate the time difference in minutes
