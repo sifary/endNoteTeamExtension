@@ -120,11 +120,32 @@ function calculateTimeDifferenceInMinutes(date) {
   return timeDifferenceInMinutes;
 }
 
-// --- Check if the given date is in the correct format ---
+// --- Check if the given date is in the correct format MM/DD/YYYY HH:MM AM/PM ---
 function isValidDateFormat(textContent) {
   const datePattern = /^(1[0-2]|0?[1-9])\/(3[01]|[12][0-9]|0?[1-9])\/\d{4} (1[0-2]|0?[1-9]):([0-5][0-9]) (AM|PM)$/;
 
   return datePattern.test(textContent);
+}
+
+// --- Check if the given date is in the correct format DD/MM/YYYY HH:MM AM/PM ---
+function isValidDateFormat2(textContent) {
+  const datePattern = /^(3[01]|[12][0-9]|0?[1-9])\/(1[0-2]|0?[1-9])\/\d{4} (1[0-2]|0?[1-9]):([0-5][0-9]) (AM|PM)$/;
+
+  return datePattern.test(textContent);
+}
+
+// --- If the date format is DD/MM/YYYY, convert it to MM/DD/YYYY ---
+function convertDateFormat(inputDate) {
+  // Split the input date string into date and time parts
+  const [datePart, timePart] = inputDate.split(' ');
+
+  // Split the date part into day, month, and year
+  const [day, month, year] = datePart.split('/');
+
+  // Rearrange the parts into the desired format
+  const outputDate = `${month}/${day}/${year} ${timePart}`;
+
+  return outputDate;
 }
 
 // --- Check if the row element has the term "Open" but not "Re-opened", and returns true if both are fulfilled ---
@@ -167,8 +188,13 @@ function handleCases() {
           const textContent = element.textContent;
           
           if (isValidDateFormat(textContent)) {
+            // if the date format is correct, push it to dateArray
             dateArray.push(textContent);
-          } 
+          } else if (isValidDateFormat2(textContent)) {
+            // if the date format is DD/MM/YYYY, convert it to MM/DD/YYYY and push it to dateArray
+            const convertedDate = convertDateFormat(textContent);
+            dateArray.push(convertedDate);
+          }
         });
 
         //check if the number of items in dateArray is 2 or 1, and assign earlierDate accordingly
