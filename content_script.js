@@ -101,10 +101,10 @@ function getEarlierDate(date1Str, date2Str) {
   const date2 = new Date(date2Str);
 
   if (date1 < date2) {
-    console.log("The earlier date is:", date1);
+
     return date1;
   } else {
-    console.log("The earlier date is:", date2);
+
     return date2;
   }
 }
@@ -135,12 +135,104 @@ function isValidDateFormat2(textContent) {
 }
 
 // --- If the date format is DD/MM/YYYY, convert it to MM/DD/YYYY ---
-function convertDateFormat(inputDate) {
+function convertDateFormat2(inputDate) {
   // Split the input date string into date and time parts
   const [datePart, timePart] = inputDate.split(' ');
 
   // Split the date part into day, month, and year
   const [day, month, year] = datePart.split('/');
+
+  // Rearrange the parts into the desired format
+  const outputDate = `${month}/${day}/${year} ${timePart}`;
+
+  return outputDate;
+}
+
+function getDayOfMonth() {
+  // Create a new Date object to get the current date
+  var currentDate = new Date();
+
+  // Get the day of the month (1-31)
+  var dayOfMonth = currentDate.getDate();
+
+  // Output the day of the month
+  return dayOfMonth;
+}
+
+function getCurrentMonth() {
+  // Create a new Date object to get the current date
+  var currentDate = new Date();
+
+  // Get the month (0-11)
+  var month = currentDate.getMonth() + 1;
+
+  // Output the month
+  return month;
+}
+
+function getCurrentYear() {
+  // Create a new Date object to get the current date
+  var currentDate = new Date();
+
+  // Get the four digit year (yyyy)
+  var year = currentDate.getFullYear();
+
+  // Output the year
+  return year;
+}
+
+// --- Convert the found dateString to the correct format MM/DD/YYYY HH:MM AM/PM ---
+function convertDateFormat(inputDate) {
+  // Split the input date string into date and time parts
+  const [datePart, timePart] = inputDate.split(' ');
+
+  // Split the date part into day, month, and year
+  const [firstDatePart, secondDatePart, year] = datePart.split('/');
+
+  const currentDayOfMonth = getDayOfMonth();
+  console.log('currentDayOfMonth!!', currentDayOfMonth)
+  const currentMonth = getCurrentMonth();
+  console.log('currentMonth!!', currentMonth)
+
+  let day, month;
+
+  // Check if the first part of the date is the day of the month
+  if ((firstDatePart == currentDayOfMonth) && (secondDatePart == currentMonth)) {
+      day = firstDatePart;
+      month = secondDatePart;
+      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      console.log('FIRST: firstDatePart === currentDayOfMonth && secondDatePart === currentMonth');
+  } else if ((firstDatePart == currentMonth) && (secondDatePart == currentDayOfMonth)) {
+      day = secondDatePart;
+      month = firstDatePart;
+      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      console.log('SECOND: firstDatePart === currentMonth && secondDatePart === currentDayOfMonth');
+  } else if ((firstDatePart > 12) && (secondDatePart <= 12)) {
+      day = firstDatePart;
+      month = secondDatePart;
+      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      console.log('THIRD: firstDatePart > 12 && secondDatePart <= 12');
+  } else if ((firstDatePart <= 12) && (secondDatePart > 12)) {
+      day = secondDatePart;
+      month = firstDatePart;
+      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      console.log('FOURTH: firstDatePart <= 12 && secondDatePart > 12');
+  } else if ((firstDatePart > currentMonth) && (secondDatePart <= 12)) {
+      day = firstDatePart;
+      month = secondDatePart;
+      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      console.log('FIFTH: firstDatePart > currentMonth && secondDatePart <= 12');
+  } else if ((secondDatePart > currentMonth) && (firstDatePart <= 12)) {
+      day = secondDatePart;
+      month = firstDatePart;
+      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      console.log('SIXTH: secondDatePart > currentMonth && firstDatePart <= 12');
+  } else {
+      month = firstDatePart;
+      day = secondDatePart;
+      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      console.log('SEVENT: No Change');
+  }
 
   // Rearrange the parts into the desired format
   const outputDate = `${month}/${day}/${year} ${timePart}`;
@@ -188,11 +280,12 @@ function handleCases() {
           const textContent = element.textContent;
           
           if (isValidDateFormat(textContent)) {
-            // if the date format is correct, push it to dateArray
-            dateArray.push(textContent);
+            // if the date format is MM/DD/YYYY, push it to dateArray
+            const convertedDate = convertDateFormat(textContent);
+            dateArray.push(convertedDate);
           } else if (isValidDateFormat2(textContent)) {
             // if the date format is DD/MM/YYYY, convert it to MM/DD/YYYY and push it to dateArray
-            const convertedDate = convertDateFormat(textContent);
+            const convertedDate = convertDateFormat2(textContent);
             dateArray.push(convertedDate);
           }
         });
@@ -269,13 +362,6 @@ const observer = new MutationObserver(() => {
   handleCases();
   handleStatus()
 });
-
-document.addEventListener("click", handleAnchors);
-document.addEventListener("mouseover", handleAnchors);
-document.addEventListener("click", handleCases);
-document.addEventListener("mouseover", handleCases);
-document.addEventListener("click", handleStatus);
-document.addEventListener("mouseover", handleStatus);
 
 // Observe the document for mutations (changes in the DOM)
 observer.observe(document, {

@@ -3,7 +3,7 @@
   "name": "EndNote SFDC Fields Highlighter",
   "version": "1.1",
   "description": "Change the styles, especially the background color, of elements or ancestor/enclosing elements with specific content.",
-  "permissions": ["activeTab"],
+  "permissions": [],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
