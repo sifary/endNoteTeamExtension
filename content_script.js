@@ -137,13 +137,13 @@ function isValidDateFormat2(textContent) {
 // --- If the date format is DD/MM/YYYY, convert it to MM/DD/YYYY ---
 function convertDateFormat2(inputDate) {
   // Split the input date string into date and time parts
-  const [datePart, timePart] = inputDate.split(' ');
+  const [datePart, timePart, isAmPm] = inputDate.split(' ');
 
   // Split the date part into day, month, and year
   const [day, month, year] = datePart.split('/');
 
   // Rearrange the parts into the desired format
-  const outputDate = `${month}/${day}/${year} ${timePart}`;
+  const outputDate = `${month}/${day}/${year} ${timePart} ${isAmPm}`;
 
   return outputDate;
 }
@@ -184,15 +184,15 @@ function getCurrentYear() {
 // --- Convert the found dateString to the correct format MM/DD/YYYY HH:MM AM/PM ---
 function convertDateFormat(inputDate) {
   // Split the input date string into date and time parts
-  const [datePart, timePart] = inputDate.split(' ');
+  const [datePart, timePart, isAmPm] = inputDate.split(' ');
 
   // Split the date part into day, month, and year
   const [firstDatePart, secondDatePart, year] = datePart.split('/');
 
   const currentDayOfMonth = getDayOfMonth();
-  console.log('currentDayOfMonth!!', currentDayOfMonth)
+  //console.log('currentDayOfMonth!!', currentDayOfMonth)
   const currentMonth = getCurrentMonth();
-  console.log('currentMonth!!', currentMonth)
+  //console.log('currentMonth!!', currentMonth)
 
   let day, month;
 
@@ -200,43 +200,44 @@ function convertDateFormat(inputDate) {
   if ((firstDatePart == currentDayOfMonth) && (secondDatePart == currentMonth)) {
       day = firstDatePart;
       month = secondDatePart;
-      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
-      console.log('FIRST: firstDatePart === currentDayOfMonth && secondDatePart === currentMonth');
+      //console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      //console.log('FIRST: firstDatePart === currentDayOfMonth && secondDatePart === currentMonth');
   } else if ((firstDatePart == currentMonth) && (secondDatePart == currentDayOfMonth)) {
       day = secondDatePart;
       month = firstDatePart;
-      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
-      console.log('SECOND: firstDatePart === currentMonth && secondDatePart === currentDayOfMonth');
+      //console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      //console.log('SECOND: firstDatePart === currentMonth && secondDatePart === currentDayOfMonth');
   } else if ((firstDatePart > 12) && (secondDatePart <= 12)) {
       day = firstDatePart;
       month = secondDatePart;
-      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
-      console.log('THIRD: firstDatePart > 12 && secondDatePart <= 12');
+      //console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      //console.log('THIRD: firstDatePart > 12 && secondDatePart <= 12');
   } else if ((firstDatePart <= 12) && (secondDatePart > 12)) {
       day = secondDatePart;
       month = firstDatePart;
-      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
-      console.log('FOURTH: firstDatePart <= 12 && secondDatePart > 12');
+      //console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      //console.log('FOURTH: firstDatePart <= 12 && secondDatePart > 12');
   } else if ((firstDatePart > currentMonth) && (secondDatePart <= 12)) {
       day = firstDatePart;
       month = secondDatePart;
-      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
-      console.log('FIFTH: firstDatePart > currentMonth && secondDatePart <= 12');
+      //console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      //console.log('FIFTH: firstDatePart > currentMonth && secondDatePart <= 12');
   } else if ((secondDatePart > currentMonth) && (firstDatePart <= 12)) {
       day = secondDatePart;
       month = firstDatePart;
-      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
-      console.log('SIXTH: secondDatePart > currentMonth && firstDatePart <= 12');
+      //console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      //console.log('SIXTH: secondDatePart > currentMonth && firstDatePart <= 12');
   } else {
       month = firstDatePart;
       day = secondDatePart;
-      console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
-      console.log('SEVENT: No Change');
+      //console.log('firstDatePart', firstDatePart, 'secondDatePart', secondDatePart, 'day', day, 'month', month);
+      //console.log('SEVENTH: No Change');
   }
 
   // Rearrange the parts into the desired format
-  const outputDate = `${month}/${day}/${year} ${timePart}`;
+  const outputDate = `${month}/${day}/${year} ${timePart} ${isAmPm}`;
 
+  //console.log('outputDate', outputDate);
   return outputDate;
 }
 
@@ -283,15 +284,18 @@ function handleCases() {
             // if the date format is MM/DD/YYYY, push it to dateArray
             const convertedDate = convertDateFormat(textContent);
             dateArray.push(convertedDate);
+            //console.log('isValidDateFormat ONE has run')
           } else if (isValidDateFormat2(textContent)) {
             // if the date format is DD/MM/YYYY, convert it to MM/DD/YYYY and push it to dateArray
             const convertedDate = convertDateFormat2(textContent);
             dateArray.push(convertedDate);
+            //console.log('isValidDateFormat2 TWO has run')
           }
         });
 
         //check if the number of items in dateArray is 2 or 1, and assign earlierDate accordingly
         let earlierDate;
+        //console.log(dateArray);
 
         if (dateArray.length === 2) {
           earlierDate = getEarlierDate(dateArray[0], dateArray[1]);
