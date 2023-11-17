@@ -1,11 +1,20 @@
 {
   "manifest_version": 3,
-  "name": "EndNote SFDC Fields Highlighter",
+  "name": "Penang CoE CForce Extension",
   "version": "1.3",
   "description": "Change the styles, especially the background color, of elements or ancestor/enclosing elements with specific content.",
-  "permissions": [],
+  "permissions": ["storage", "tabs"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/ExtLogoV3.png",
+    "48": "icons/ExtLogoV3.png",
+    "128": "icons/ExtLogoV3.png"
+  },
   "action": {
     "default_popup": "popup.html",
+    "default_title": "Penang CoE CForce Extension",
     "default_icon": {
       "16": "icons/ExtLogoV3.png",
       "48": "icons/ExtLogoV3.png",
@@ -15,9 +24,9 @@
   "content_scripts": [
     {
       "matches": [
-      "https://clarivateanalytics.lightning.force.com/*", 
-      "https://clarivateanalytics--preprod.sandbox.lightning.force.com/*"
-    ],
+        "https://clarivateanalytics.lightning.force.com/*", 
+        "https://clarivateanalytics--preprod.sandbox.lightning.force.com/*"
+      ],
       "js": ["content_script.js"],
       "run_at": "document_idle"
     }

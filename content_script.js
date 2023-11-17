@@ -1,57 +1,182 @@
+// --- METADATA ---
+const emailEndNote = "endnote.support@clarivate.com"
+const emailKeywordsEndNote = [
+  'ts.',
+  'ts-',
+  'techstreet',
+  'account',
+  'tr.',
+  'queries',
+  'jgear',
+  'jstead',
+  'derwent',
+  'customer',
+  'scientific',
+  'proposals',
+  'service',
+  'science',
+  'custserv',
+  'wos', 'WOS',
+  'collections',
+  'invoices',
+  'serion',
+  'services',
+  'compumark',
+  'admin',
+  'contract',
+  'ipsci',
+  'ips',
+  'drg',
+  'dartsip',
+  'hidadataprogram',
+  'cortellis',
+  'compuMark',
+  'account',
+  'billing',
+  'invoice',
+  'certificate',
+  'tax',
+  'support',
+  'askhbi',
+  'cash',
+  'team',
+  'sales',
+  'bis.in', 'bis.mon',
+  'bisqa',
+];
+
+const emailWoS = "wosg.support@clarivate.com"
+const emailKeywordsWoS = [
+  'ts.',
+  'ts-',
+  'techstreet',
+  'account',
+  'tr.',
+  'queries',
+  'jgear',
+  'jstead',
+  'derwent',
+  'customer',
+  'scientific',
+  'proposals',
+  'service',
+  'custserv',
+  'endnote',
+  'collections',
+  'invoices',
+  'serion',
+  'services',
+  'compumark',
+  'admin',
+  'contract',
+  'ipsci',
+  'ips',
+  'drg',
+  'dartsip',
+  'hidadataprogram',
+  'cortellis',
+  'compuMark',
+  'account',
+  'billing',
+  'invoice',
+  'certificate',
+  'tax',
+  'support',
+  'askhbi',
+  'cash',
+  'team',
+  'sales',
+  'bis.in', 'bis.mon',
+  'bisqa',
+];
+
+const emailScholarOne = "s1help@clarivate.com";
+const emailKeywordsScholarOne = [
+  'ts.',
+  'ts-',
+  'techstreet',
+  'account',
+  'tr.',
+  'queries',
+  'wos', 'WOS',
+  'jgear',
+  'jstead',
+  'derwent',
+  'customer',
+  'scientific',
+  'proposals',
+  'service',
+  'custserv',
+  'endnote',
+  'collections',
+  'invoices',
+  'serion',
+  'services',
+  'compumark',
+  'admin',
+  'contract',
+  'ipsci',
+  'ips',
+  'drg',
+  'dartsip',
+  'hidadataprogram',
+  'cortellis',
+  'compuMark',
+  'account',
+  'billing',
+  'invoice',
+  'certificate',
+  'tax',
+  'support',
+  'askhbi',
+  'cash',
+  'team',
+  'sales',
+  'bis.in', 'bis.mon',
+  'bisqa',
+];
+
+let desiredTextSelection, emailKeywordsSelection;
+
+chrome.runtime.sendMessage({ message: 'getSavedSelection' }, function(response) {
+  if (response.status) {
+    const savedSelection = response.data;
+
+    // Based on the saved selection, set the desiredText and emailKeywords
+    if (savedSelection === 'EndNote') {
+      desiredTextSelection = emailEndNote;
+      emailKeywordsSelection = emailKeywordsEndNote;
+    } else if (savedSelection === 'ScholarOne') {
+      desiredTextSelection = emailScholarOne;
+      emailKeywordsSelection = emailKeywordsScholarOne;
+    } else if (savedSelection === 'WebOfScience') {
+      desiredTextSelection = emailWoS;
+      emailKeywordsSelection = emailKeywordsWoS;
+    } else if (savedSelection === 'AccountSupport') {
+      desiredTextSelection = emailEndNote;
+      emailKeywordsSelection = emailKeywordsEndNote;
+    } else if (savedSelection === 'LifeScience') {
+      desiredTextSelection = emailEndNote;
+      emailKeywordsSelection = emailKeywordsEndNote;
+    }
+
+  } else {
+    console.error('Error retrieving selection:', response.error);
+  }
+});
+
+
 // --- FROM EMAIL HIGHLIGHTER ---
 
 // Function to check if the anchor's content matches the specific text
 function isEndNoteSupportAnchor(anchor) {
-  const desiredText = "endnote.support@clarivate.com";
+  const desiredText = desiredTextSelection;
   return anchor.textContent.includes(desiredText);
 }
 
 //Function to check if there is an email keyword in the text
 function isClarivateEmailList(anchor) {
-  const emailKeywords = [
-    'ts.',
-    'ts-',
-    'techstreet',
-    'account',
-    'tr.',
-    'queries',
-    'jgear',
-    'jstead',
-    'derwent',
-    'customer',
-    'scientific',
-    'proposals',
-    'service',
-    'science',
-    'custserv',
-    'wos', 'WOS',
-    'collections',
-    'invoices',
-    'serion',
-    'services',
-    'compumark',
-    'admin',
-    'contract',
-    'ipsci',
-    'ips',
-    'drg',
-    'dartsip',
-    'hidadataprogram',
-    'cortellis',
-    'compuMark',
-    'account',
-    'billing',
-    'invoice',
-    'certificate',
-    'tax',
-    'support',
-    'askhbi',
-    'cash',
-    'team',
-    'sales',
-    'bis.in', 'bis.mon',
-    'bisqa',
-  ];
+  const emailKeywords = emailKeywordsSelection;
 
   const clarivateDomain = '@clarivate.com';
 
@@ -90,7 +215,6 @@ function handleAnchors() {
       unhighlightAnchor(anchor);
     }
   }
-
 }
 
 // --- OPEN CASES HIGHLIGHTER ---
@@ -133,6 +257,20 @@ function isValidDateFormat2(textContent) {
 
   return datePattern.test(textContent);
 }
+
+// --- Check if the given date is in the correct format DD/MM/YYYY HH:MM ---
+function isValidDateFormatDDMMnoAMPM (textContent) {
+  const datePattern = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/\d{4} ([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+  return datePattern.test(textContent);
+}
+
+// --- Check if the given date is in the correct format MM/DD/YYYY HH:MM ---
+function isValidDateFormatMMDDnoAMPM (textContent) {
+  const datePattern = /^(0?[1-9]|1[0-2])\/(0?[1-9]|[12][0-9]|3[01])\/\d{4} ([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+  return datePattern.test(textContent);
+}
+
 
 // --- If the date format is DD/MM/YYYY, convert it to MM/DD/YYYY ---
 function convertDateFormat2(inputDate) {
@@ -179,6 +317,49 @@ function getCurrentYear() {
 
   // Output the year
   return year;
+}
+
+function convertDateFormatDDMMwithAMPM(dateString) {
+  // Split the date and time parts
+  const [datePart, timePart] = dateString.split(' ');
+
+  // Split the date into day, month, and year
+  const [day, month, year] = datePart.split('/').map(Number);
+
+  // Split the time into hours and minutes
+  const [hours, minutes] = timePart.split(':').map(Number);
+
+  // Create a new Date object
+  const date = new Date(year, month - 1, day, hours, minutes);
+
+  // Format hours for AM/PM
+  const hours12 = date.getHours() % 12 || 12;
+  const amPm = date.getHours() < 12 ? 'AM' : 'PM';
+
+  // Format the date string
+  return `${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')}/${year} ` +
+         `${String(hours12).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${amPm}`;
+}
+
+function convertDateFormatMMDDwithAMPM(dateString) {
+  const [datePart, timePart] = dateString.split(' ');
+  const [month, day, year] = datePart.split('/');
+  const [hours, minutes] = timePart.split(':');
+
+  // Create a new Date object
+  const date = new Date(year, month - 1, day, hours, minutes);
+
+  // Format the date into MM/DD/YYYY HH:MM AM/PM
+  const formattedDate = date.toLocaleString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+  });
+
+  return formattedDate;
 }
 
 // --- Convert the found dateString to the correct format MM/DD/YYYY HH:MM AM/PM ---
@@ -290,6 +471,16 @@ function handleCases() {
             const convertedDate = convertDateFormat2(textContent);
             dateArray.push(convertedDate);
             //console.log('isValidDateFormat2 TWO has run')
+          } else if (isValidDateFormatDDMMnoAMPM(textContent)) {
+            const addAMPM = convertDateFormatDDMMwithAMPM(textContent);
+            console.log(addAMPM);
+            const convertedDate = convertDateFormat(addAMPM);
+            dateArray.push(convertedDate);
+          } else if (isValidDateFormatMMDDnoAMPM(textContent)) {
+            const addAMPM = convertDateFormatMMDDwithAMPM(textContent);
+            console.log(addAMPM);
+            const convertedDate = convertDateFormat(addAMPM);
+            dateArray.push(convertedDate);
           }
         });
 
@@ -323,6 +514,7 @@ function handleCases() {
   }
 }
 
+
 // --- CASE STATUS HIGHLIGHTER ---
 
 // --- Generate the style declaration for the handleStatus function ---
@@ -350,22 +542,31 @@ function handleStatus() {
           cell.setAttribute("style", generateStyle("rgb(45, 200, 64)"));
         } else if (cellText === "Closed" || cellText === "Pending Customer Response") {
           cell.setAttribute("style", generateStyle("rgb(103, 103, 103)"));
+        } else if (cellText === "Campaign Scheduled" || cellText === "Follow Up Sent") {
+          cell.textContent = "Follow Up Sent";
+          cell.setAttribute("style", generateStyle("rgb(48, 125, 248)"));
         } else {
           cell.removeAttribute("style");
         }
       }
     }
   }
+
 }
 
-// --- EVENT LISTENERS FOR EXECUTING FUNCTIONS ---
+// EVENT LISTENERS FOR EXECUTING FUNCTIONS
 
-// MutationObserver to detect changes in the DOM
+// Observe the document for mutations (changes in the DOM)
 const observer = new MutationObserver(() => {
   handleAnchors();
   handleCases();
-  handleStatus()
+  handleStatus();
 });
+
+/* // Call functions initially
+handleAnchors();
+handleCases();
+handleStatus(); */
 
 // Observe the document for mutations (changes in the DOM)
 observer.observe(document, {
